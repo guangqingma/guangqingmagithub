@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玩不玩和平精英 - 绿色护眼版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #e9f7e6; /* 柔和绿色背景 */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background-color 0.5s ease;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #d8f0d3; /* 稍深一点的护眼绿 */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 100, 0, 0.1);
+            border: 2px solid #b8e0b1;
+        }
+        
+        h1 {
+            color: #2d5016;
+            font-size: 3.5rem;
+            margin-bottom: 60px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: 2px;
+            padding: 10px;
+            background-color: #c5e8bf;
+            border-radius: 12px;
+            display: inline-block;
+            position: relative;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 10%;
+            width: 80%;
+            height: 4px;
+            background-color: #8bc34a;
+            border-radius: 2px;
+        }
+        
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .game-btn {
+            padding: 20px 50px;
+            font-size: 2.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            min-width: 220px;
+        }
+        
+        #play-btn {
+            background-color: #4caf50; /* 绿色 */
+            color: white;
+        }
+        
+        #play-btn:hover {
+            background-color: #3d8b40;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        #play-btn:active {
+            transform: translateY(0);
+        }
+        
+        #decline-btn {
+            background-color: #f44336; /* 红色 */
+            color: white;
+        }
+        
+        #decline-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        #decline-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: #e0f7e9;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border: 3px solid #8bc34a;
+            position: relative;
+        }
+        
+        .modal h2 {
+            color: #2d5016;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .player-info {
+            background-color: #c5e8bf;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .player-name {
+            font-size: 2.2rem;
+            color: #1b5e20;
+            font-weight: bold;
+        }
+        
+        .modal-btn {
+            padding: 15px 40px;
+            font-size: 1.8rem;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        #accept-btn {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        #accept-btn:hover {
+            background-color: #3d8b40;
+        }
+        
+        #close-btn {
+            background-color: #9e9e9e;
+            color: white;
+        }
+        
+        #close-btn:hover {
+            background-color: #757575;
+        }
+        
+        .decline-removed #decline-btn {
+            display: none;
+        }
+        
+        .decline-removed #play-btn {
+            transform: scale(1.3);
+            transition: transform 0.5s ease;
+        }
+        
+        .footer-note {
+            margin-top: 40px;
+            color: #5a7d4e;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .game-btn {
+                font-size: 1.8rem;
+                padding: 18px 30px;
+                min-width: 180px;
+            }
+            
+            .buttons-container {
+                gap: 30px;
+            }
+            
+            .modal-content {
+                padding: 30px 20px;
+            }
+            
+            .modal h2 {
+                font-size: 2rem;
+            }
+            
+            .player-name {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .game-btn {
+                font-size: 1.5rem;
+                padding: 15px 20px;
+                min-width: 150px;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>玩不玩和平精英</h1>
+        
+        <div class="buttons-container" id="buttons-container">
+            <button class="game-btn" id="play-btn">上号</button>
+            <button class="game-btn" id="decline-btn">不要</button>
+        </div>
+        
+        <p class="footer-note">注意：点击"接受邀请"将打开和平精英游戏</p>
+    </div>
+    
+    <!-- 邀请弹窗 -->
+    <div class="modal" id="invite-modal">
+        <div class="modal-content">
+            <h2>和平精英游戏邀请</h2>
+            <div class="player-info">
+                <p>来自玩家：</p>
+                <p class="player-name" id="player-name">南极磷虾饼</p>
+            </div>
+            <p>邀请你组队游戏，是否接受？</p>
+            <div style="margin-top: 30px;">
+                <button class="modal-btn" id="accept-btn">接受邀请</button>
+                <button class="modal-btn" id="close-btn">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 获取DOM元素
+        const playBtn = document.getElementById('play-btn');
+        const declineBtn = document.getElementById('decline-btn');
+        const buttonsContainer = document.getElementById('buttons-container');
+        const inviteModal = document.getElementById('invite-modal');
+        const acceptBtn = document.getElementById('accept-btn');
+        const closeBtn = document.getElementById('close-btn');
+        const playerName = document.getElementById('player-name');
+        
+        // 是否已经移除了"不要"按钮
+        let declineRemoved = false;
+        
+        // 点击"不要"按钮的处理
+        declineBtn.addEventListener('click', function() {
+            // 添加类以触发CSS动画
+            buttonsContainer.classList.add('decline-removed');
+            
+            // 设置一个延时确保动画完成后再完全移除按钮
+            setTimeout(() => {
+                // 移除"不要"按钮
+                declineBtn.remove();
+                declineRemoved = true;
+            }, 500);
+        });
+        
+        // 点击"上号"按钮的处理
+        playBtn.addEventListener('click', function() {
+            // 如果"不要"按钮已经移除了，直接显示弹窗
+            if (declineRemoved) {
+                showInviteModal();
+            } else {
+                // 否则，模拟用户先点击了"不要"按钮
+                buttonsContainer.classList.add('decline-removed');
+                
+                setTimeout(() => {
+                    declineBtn.remove();
+                    declineRemoved = true;
+                    
+                    // 等待按钮变大动画完成后显示弹窗
+                    setTimeout(() => {
+                        showInviteModal();
+                    }, 300);
+                }, 500);
+            }
+        });
+        
+        // 显示邀请弹窗
+        function showInviteModal() {
+            inviteModal.style.display = 'flex';
+        }
+        
+        // 接受邀请按钮点击事件
+        acceptBtn.addEventListener('click', function() {
+            alert('正在打开和平精英...');
+            // 在实际场景中，这里会调用打开游戏的实际代码
+            // 例如：window.location.href = 'game://peaceelite';
+            
+            // 关闭弹窗
+            inviteModal.style.display = 'none';
+        });
+        
+        // 关闭弹窗按钮点击事件
+        closeBtn.addEventListener('click', function() {
+            inviteModal.style.display = 'none';
+        });
+        
+        // 点击弹窗外部也可以关闭弹窗
+        window.addEventListener('click', function(event) {
+            if (event.target === inviteModal) {
+                inviteModal.style.display = 'none';
+            }
+        });
+        
+        // 添加键盘事件支持
+        document.addEventListener('keydown', function(event) {
+            // ESC键关闭弹窗
+            if (event.key === 'Escape' && inviteModal.style.display === 'flex') {
+                inviteModal.style.display = 'none';
+            }
+            
+            // 回车键触发"上号"按钮
+            if (event.key === 'Enter' && inviteModal.style.display !== 'flex') {
+                playBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
